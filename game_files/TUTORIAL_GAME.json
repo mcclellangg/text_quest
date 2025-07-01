@@ -1,0 +1,22 @@
+{
+    "rooms": {
+        "start_room": {
+            "id": "start_room",
+            "name": "DUNGEON ENTRANCE",
+            "base_description": "You stand alone in a dark damp basement. In the wall before you there is a gaping fissure roughly the size of a door. To the west there is a door.",
+            "num_player_visits": 0,
+            "connections_map": {
+                "w": "armory",
+                "n": "wine_cellar"
+            }
+        }
+    },
+    "player": {
+        "health": 100,
+        "total_moves": 0,
+        "inventory": [
+            "blank_map"
+        ],
+        "current_location": "start_room"
+    }
+}
