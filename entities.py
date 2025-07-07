@@ -9,6 +9,28 @@ from dataclasses import dataclass, asdict
 
 
 @dataclass
+class Item:
+    id: str
+    name: str
+    description: str
+    current_location: str
+
+    @classmethod
+    def from_dict(cls, item_data: dict):
+        return cls(**item_data)
+
+    def to_dict(self):
+        return asdict(self)
+
+    def update_current_location(self, location: str):
+        """Updates current_location of item to one of below values:
+        - 'room_id'
+        - 'player_inventory'
+        """
+        self.current_location = location
+
+
+@dataclass
 class Player:
     health: int
     total_moves: int
@@ -35,30 +57,31 @@ class Player:
     def update_total_moves(self):
         self.total_moves += 1
 
+
 @dataclass
 class Room:
     id: str
     name: str
     base_description: str
     num_player_visits: int
-    connections_map : dict
+    connections_map: dict
 
     @classmethod
     def from_dict(cls, room_data: dict):
         return cls(**room_data)
-    
+
     def to_dict(self):
         return asdict(self)
-    
+
     def get_base_description(self):
         return self.base_description
-    
+
     def get_name(self):
         return self.name
-    
+
     def get_id(self):
         return self.id
-    
+
     def display_room(self):
         """Displays in following format:
         ROOM NAME
@@ -66,7 +89,7 @@ class Room:
         """
         print(self.get_name())
         print(self.get_base_description())
-        
+
     def validate_direction(self, direction: str):
         # NOTE: error should be handled at a higher level, but for prototype purposes this is fine.
         try:
@@ -78,6 +101,6 @@ class Room:
 
     def get_adjacent_room_id(self, direction: str):
         return self.connections_map[direction]
-    
+
     def update_num_player_visits(self):
         self.num_player_visits += 1

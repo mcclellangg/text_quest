@@ -18,5 +18,20 @@
             "blank_map"
         ],
         "current_location": "start_room"
+    },
+    "items":
+    {
+        "lamp": {
+            "id": "lamp",
+            "name": "old lamp",
+            "description": "An old storm lantern bearing the stamp of 'Cloman Co-makers of reliable products'.",
+            "current_location": "start_room"
+        },
+        "magic_sword": {
+            "id": "magic_sword",
+            "name": "magic sword",
+            "description": "An old sword. Beneath layers of dust, the blade still looks sharp enough to cut. Handle with care.",
+            "current_location": "start_room"
+        }
     }
 }

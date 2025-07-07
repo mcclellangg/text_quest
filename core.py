@@ -4,6 +4,8 @@ Core components for running the game.
 """
 
 from config import BASE_DIR, GAME_FILE_DIR, TUTORIAL_GAME_FILENAME
+from copy import deepcopy
+from entities import Item, Player, Room
 import json
 import logging
 from pathlib import Path
@@ -21,6 +23,11 @@ class GameCoordinator:
             self.load_game_from_file(filename=TUTORIAL_GAME_FILENAME, dir="game_files")
             or {}
         )
+        # Instantiate objects from game_data
+        self.player = Player.from_dict(self.game_data["player"])
+        self.current_room = Room.from_dict(self.game_data["rooms"]["start_room"])
+        self.item_map = self.load_game_items()
+
         self.logger.info("GameCoordinator initialized.")
 
     # CommandProcessor
@@ -88,8 +95,20 @@ class GameCoordinator:
             print(f"ERROR: {e}")
             return e
 
+    def load_game_items(self):
+        game_items = deepcopy(self.game_data["items"])
+        return {
+            item_id: Item.from_dict(item_dict)
+            for item_id, item_dict in game_items.items()
+        }
+
     def post_load_game_file_processing(self):
-        pass
+        "Update game state (item_map, player, current_room), and display current room"
+        self.player = Player.from_dict(self.game_data["player"])
+        current_room_id = self.player.get_current_location()
+        self.current_room = Room.from_dict(self.game_data["rooms"][current_room_id])
+        self.item_map = self.load_game_items()
+        self.current_room.display_room()
 
     def handle_restart(self, args):
         get_user_validation = input(
