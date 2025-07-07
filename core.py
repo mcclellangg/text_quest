@@ -23,7 +23,7 @@ class GameCoordinator:
             self.load_game_from_file(filename=TUTORIAL_GAME_FILENAME, dir="game_files")
             or {}
         )
-        # Instantiate objects from game_data
+        # Game State
         self.player = Player.from_dict(self.game_data["player"])
         self.current_room = Room.from_dict(self.game_data["rooms"]["start_room"])
         self.item_map = self.load_game_items()
@@ -57,6 +57,8 @@ class GameCoordinator:
             "save": self.handle_save,
             "load": self.handle_load,
             "restart": self.handle_restart,
+            "look": self.handle_look,
+            "take": self.handle_take,
             # "move": self.handle_move_cmd,
             # "stats": self.display_player_stats
         }
@@ -144,6 +146,41 @@ class GameCoordinator:
             self.logger.error(f"Save game error: {file_path}, {e}")
             return e
 
+    # handle player cmds
+    def handle_look(self, args):
+        # validate
+        if len(args) == 1:
+            print(self.current_room.get_base_description())
+        elif len(args) == 2:
+            target = args[1]
+            self.generate_description(target=target)
+        else:
+            self.logger.error(f"ERROR-Unexpected args passed: {args}")
+
+    def generate_description(self, target):
+        """Handles basic descriptions for items.
+        NOTE: anything you know exists can be 'looked' for.
+        """
+        if target in self.item_map:
+            print(self.item_map[target].get_description())
+        else:
+            self.logger.info(
+                "Only 'item' objects are currently supported, please try again."
+            )
+
+    def handle_take(self, args):
+        if len(args) == 1:
+            print(
+                "Take what? Me out, on me, to the ball game? None of which will work mind you."
+            )
+        elif len(args) == 2:
+            target = args[1]
+            # if valid target perform take actions and update game state
+            print(f"execute take cmds for {target}")
+        else:
+            self.logger.error(f"ERROR-Unexpected args passed: {args}")
+
+    # Run game
     def run_game(self):
         while True:
             args = self.get_args_from_user()

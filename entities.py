@@ -22,6 +22,9 @@ class Item:
     def to_dict(self):
         return asdict(self)
 
+    def get_description(self):
+        return self.description
+
     def update_current_location(self, location: str):
         """Updates current_location of item to one of below values:
         - 'room_id'
@@ -83,7 +86,7 @@ class Room:
         return self.id
 
     def display_room(self):
-        """Displays in following format:
+        """Displays in following format when rooms are first entered.
         ROOM NAME
         You are in a dark, dank room.
         """
