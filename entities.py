@@ -34,3 +34,50 @@ class Player:
 
     def update_total_moves(self):
         self.total_moves += 1
+
+@dataclass
+class Room:
+    id: str
+    name: str
+    base_description: str
+    num_player_visits: int
+    connections_map : dict
+
+    @classmethod
+    def from_dict(cls, room_data: dict):
+        return cls(**room_data)
+    
+    def to_dict(self):
+        return asdict(self)
+    
+    def get_base_description(self):
+        return self.base_description
+    
+    def get_name(self):
+        return self.name
+    
+    def get_id(self):
+        return self.id
+    
+    def display_room(self):
+        """Displays in following format:
+        ROOM NAME
+        You are in a dark, dank room.
+        """
+        print(self.get_name())
+        print(self.get_base_description())
+        
+    def validate_direction(self, direction: str):
+        # NOTE: error should be handled at a higher level, but for prototype purposes this is fine.
+        try:
+            self.connections_map[direction]
+            return True
+        except KeyError as e:
+            print(f"Unable to move: {direction} The way is blocked!")
+            return False
+
+    def get_adjacent_room_id(self, direction: str):
+        return self.connections_map[direction]
+    
+    def update_num_player_visits(self):
+        self.num_player_visits += 1
