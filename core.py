@@ -98,11 +98,22 @@ class GameCoordinator:
             return e
 
     def load_game_items(self):
+        """
+        Reads 'items' in from game_data and creates a map in below format so that 
+        items objects can be accessed via keyword:
+        {
+         'item_id': Item,
+         'item_id_lamp': Lamp Item
+        }
+        """
         game_items = deepcopy(self.game_data["items"])
         return {
             item_id: Item.from_dict(item_dict)
             for item_id, item_dict in game_items.items()
         }
+    
+    def convert_item_map_to_dict(self):
+        return {item_id: item.to_dict() for item_id, item in self.item_map.items()}
 
     def post_load_game_file_processing(self):
         "Update game state (item_map, player, current_room), and display current room"
@@ -158,7 +169,8 @@ class GameCoordinator:
             self.logger.error(f"ERROR-Unexpected args passed: {args}")
 
     def generate_description(self, target):
-        """Handles basic descriptions for items.
+        """
+        Handles basic descriptions for items.
         NOTE: anything you know exists can be 'looked' for.
         """
         if target in self.item_map:
@@ -169,16 +181,60 @@ class GameCoordinator:
             )
 
     def handle_take(self, args):
+        """
+        Validates user is attempting to take a known item. If item and player location are
+        the same room_id, then the item location will be changed to the player's inventory.
+        """
         if len(args) == 1:
             print(
                 "Take what? Me out, on me, to the ball game? None of which will work mind you."
             )
         elif len(args) == 2:
             target = args[1]
-            # if valid target perform take actions and update game state
-            print(f"execute take cmds for {target}")
+            valid_target_item = False
+            try:
+                valid_target_item = self.item_map[target]
+            except KeyError as e:
+                self.logger.info(f"Unknown item: {valid_target_item}")
+            if valid_target_item and (valid_target_item.get_current_location() == self.player.get_current_location()):
+                # STATE CHANGE #
+                self.player.add_item_to_inventory(valid_target_item) # This just adds id of target
+                self.item_map[valid_target_item.id].update_current_location("player_inventory")
+                # call for game data update
+                # NOTE: may be desirable to move this to higher level function (so player_moves can be counted in post_processing.)
+                self.game_data = self.update_game_data()
+            elif valid_target_item:
+                print(f"No {valid_target_item.name} here, why don't you look somewhere else.")
+            else:
+                print(f"Can't take that: {target}.")
         else:
             self.logger.error(f"ERROR-Unexpected args passed: {args}")
+    
+    def update_game_data(self):
+        """
+        Called after state change events to write changes in Game State (player, item_map, current_room)
+        to game_data.
+
+        NOTE: currently this assumes changes can only be made in the current_room, so only those will
+        need to be maintained.
+        """
+        next_game_data = {}
+        next_game_data["rooms"] = deepcopy(self.game_data["rooms"])
+        next_game_data["items"] = deepcopy(self.game_data["items"])
+        
+        # Will need to add info from current room, as this is not handled by the room itself
+        # num_visits are calculated when rooms are initially entered, but that is not logged into the game_state
+        current_room_id = self.current_room.get_id()
+        next_game_data["rooms"][current_room_id] = self.current_room.to_dict()
+
+        # Update player info
+        next_game_data["player"] = self.player.to_dict()
+
+        # Update items
+        item_map_dict = self.convert_item_map_to_dict()
+        next_game_data["items"] = item_map_dict
+
+        return next_game_data
 
     # Run game
     def run_game(self):

@@ -23,7 +23,7 @@
     {
         "lamp": {
             "id": "lamp",
-            "name": "old lamp",
+            "name": "lamp",
             "description": "An old storm lantern bearing the stamp of 'Cloman Co-makers of reliable products'.",
             "current_location": "start_room"
         },

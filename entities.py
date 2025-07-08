@@ -25,6 +25,9 @@ class Item:
     def get_description(self):
         return self.description
 
+    def get_current_location(self):
+        return self.current_location
+
     def update_current_location(self, location: str):
         """Updates current_location of item to one of below values:
         - 'room_id'
@@ -56,6 +59,14 @@ class Player:
 
     def update_current_location(self, room_id: str):
         self.current_location = room_id
+
+    def add_item_to_inventory(self, item):
+        self.inventory.append(item)
+        print(f"{item.name} added to pack.")
+
+    def remove_item_from_inventory(self, item):
+        if item in self.inventory:
+            print(f"{item.name} removed from pack.")
 
     def update_total_moves(self):
         self.total_moves += 1
