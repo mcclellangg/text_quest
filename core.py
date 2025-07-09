@@ -248,32 +248,6 @@ class GameCoordinator:
         else:
             self.logger.error(f"ERROR-Unexpected args passed: {args}")
 
-    # def update_game_data(self):
-    #     """
-    #     Called after state change events to write changes in Game State (player, item_map, current_room)
-    #     to game_data.
-
-    #     NOTE: currently this assumes changes can only be made in the current_room, so only those will
-    #     need to be maintained.
-    #     """
-    #     next_game_data = {}
-    #     next_game_data["rooms"] = deepcopy(self.game_data["rooms"])
-    #     next_game_data["items"] = deepcopy(self.game_data["items"])
-
-    #     # Will need to add info from current room, as this is not handled by the room itself
-    #     # num_visits are calculated when rooms are initially entered, but that is not logged into the game_state
-    #     current_room_id = self.current_room.get_id()
-    #     next_game_data["rooms"][current_room_id] = self.current_room.to_dict()
-
-    #     # Update player info
-    #     next_game_data["player"] = self.player.to_dict()
-
-    #     # Update items
-    #     item_map_dict = self.convert_item_map_to_dict()
-    #     next_game_data["items"] = item_map_dict
-
-    #     return next_game_data
-
     # Run game
     def run_game(self):
         while True:
