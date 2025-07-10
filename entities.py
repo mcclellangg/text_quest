@@ -6,6 +6,7 @@ Game entities:
 """
 
 from dataclasses import dataclass, asdict
+from typing import List, Optional
 
 
 @dataclass
@@ -79,9 +80,75 @@ class Room:
     base_description: str
     num_player_visits: int
     connections_map: dict
+    properties: dict
+
+    # Define condition functions as a class variable
+    condition_functions = None
+
+    @classmethod
+    def _initialize_condition_functions(cls):
+        """Initialize condition functions - call this once when setting up the class"""
+        cls.condition_functions = {
+            "has_item": cls._has_item,
+            "visit_count_less": cls._visit_count_less,
+        }
+
+    def _has_item(self, item_name: str, items_in_room: List[str]) -> bool:
+        """Check if a specific item is present in the room"""
+        return item_name in items_in_room
+
+    def _visit_count_less(self, count: int, items_in_room: List[str]) -> bool:
+        """Check if player has visited less than count times"""
+        return self.num_player_visits < count
+
+    def generate_modified_description(
+        self, items_in_room: Optional[List[str]] = None
+    ) -> str:
+        """Generate dynamic description based on conditions"""
+        if items_in_room is None:
+            items_in_room = []
+
+        description = self.base_description
+
+        # Get conditional descriptions from properties
+        conditional_descriptions = self.properties.get("conditional_descriptions", {})
+
+        for condition_name, condition_data in conditional_descriptions.items():
+            if isinstance(condition_data, dict) and "condition" in condition_data:
+                condition_config = condition_data["condition"]
+                modifier = condition_data["description_modifier"]
+
+                if self._evaluate_condition(condition_config, items_in_room):
+                    description += " " + modifier
+
+        return description
+
+    def _evaluate_condition(
+        self, condition_data: dict, items_in_room: List[str]
+    ) -> bool:
+        """Evaluate a condition based on its configuration"""
+        if not isinstance(condition_data, dict):
+            return False
+
+        condition_type = condition_data.get("type")
+        params = condition_data.get("params", [])
+
+        if condition_type in self.condition_functions:
+            try:
+                return self.condition_functions[condition_type](
+                    self, *params, items_in_room
+                )
+            except Exception as e:
+                print(f"Error evaluating condition '{condition_type}': {e}")
+                return False
+
+        return False
 
     @classmethod
     def from_dict(cls, room_data: dict):
+        if cls.condition_functions is None:
+            cls._initialize_condition_functions()
+
         return cls(**room_data)
 
     def to_dict(self):
@@ -96,13 +163,13 @@ class Room:
     def get_id(self):
         return self.id
 
-    def display_room(self):
+    def display_room(self, items_in_room: List[str]):
         """Displays in following format when rooms are first entered.
         ROOM NAME
         You are in a dark, dank room.
         """
         print(self.get_name())
-        print(self.get_base_description())
+        print(self.generate_modified_description(items_in_room=items_in_room))
 
     def validate_direction(self, direction: str):
         # NOTE: error should be handled at a higher level, but for prototype purposes this is fine.

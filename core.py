@@ -138,7 +138,7 @@ class GameCoordinator:
         self.current_room = Room.from_dict(self.game_data["rooms"][current_room_id])
         self.item_map = self.load_game_items()
         self.room_map = self.load_game_rooms()
-        self.current_room.display_room()
+        self.current_room.display_room(items_in_room=self.get_items_in_current_room())
 
     def handle_restart(self, args):
         get_user_validation = input(
@@ -186,11 +186,26 @@ class GameCoordinator:
             self.logger.error(f"Save game error: {file_path}, {e}")
             return e
 
+    # Negotiators
+    """Methods that rely on multiple objects."""
+
+    def get_items_in_current_room(self) -> List[str]:
+        """Identify items (via item_id) in current room based on their current_location."""
+        items_in_room = []
+        for item_id, item in self.item_map.items():
+            if item.get_current_location() == self.current_room.get_id():
+                items_in_room.append(item_id)
+        return items_in_room
+
     # handle player cmds
     def handle_look(self, args):
         # validate
         if len(args) == 1:
-            print(self.current_room.get_base_description())
+            print(
+                self.current_room.generate_modified_description(
+                    items_in_room=self.items_in_room()
+                )
+            )
         elif len(args) == 2:
             target = args[1]
             self.generate_description(target=target)
