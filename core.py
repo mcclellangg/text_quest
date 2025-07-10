@@ -203,7 +203,7 @@ class GameCoordinator:
         if len(args) == 1:
             print(
                 self.current_room.generate_modified_description(
-                    items_in_room=self.items_in_room()
+                    items_in_room=self.get_items_in_current_room()
                 )
             )
         elif len(args) == 2:
@@ -263,11 +263,25 @@ class GameCoordinator:
         else:
             self.logger.error(f"ERROR-Unexpected args passed: {args}")
 
+    # GameState conditions
+    def ready_to_explore_condition_reached(self):
+        """Returns True if player has obtained both the 'lamp' and the 'sword' and is in the start room."""
+        all_items_obtained = True
+        items_to_obtain = ["lamp", "magic_sword"]
+        for item in items_to_obtain:
+            if item not in self.player.get_inventory_items_by_id():
+                return False
+        return all_items_obtained and (
+            self.player.get_current_location() == "start_room"
+        )
+
     # Run game
     def run_game(self):
         while True:
             args = self.get_args_from_user()
             if self.validate_args(args=args):
                 self.process_args(args=args)
+                if self.ready_to_explore_condition_reached():
+                    print("You feel prepared, proceed into the dungeon")
             else:
                 self.logger.error("Invalid cmd, try again.")

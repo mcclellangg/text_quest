@@ -58,16 +58,23 @@ class Player:
         "Returns 'room_id' for current room."
         return self.current_location
 
+    def get_inventory_items_by_id(self) -> List[str]:
+        """
+        NOTE: currently inventory is a list of items referenced by their id. This will need to be changed to support future functionalities
+        (player inspecting item, displaying item by name).
+        """
+        return self.inventory
+
     def update_current_location(self, room_id: str):
         self.current_location = room_id
 
     def add_item_to_inventory(self, item):
-        self.inventory.append(item)
-        print(f"{item.name} added to pack.")
+        self.inventory.append(item.id)
+        print(f"{item.id} added to pack.")
 
     def remove_item_from_inventory(self, item):
         if item in self.inventory:
-            print(f"{item.name} removed from pack.")
+            print(f"{item.id} removed from pack.")
 
     def update_total_moves(self):
         self.total_moves += 1
