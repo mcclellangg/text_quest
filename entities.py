@@ -60,6 +60,7 @@ class Player:
 
     def get_inventory_items_by_id(self) -> List[str]:
         """
+        Example return -> ['lamp', 'sword', 'trophy']
         NOTE: currently inventory is a list of items referenced by their id. This will need to be changed to support future functionalities
         (player inspecting item, displaying item by name).
         """

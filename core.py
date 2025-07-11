@@ -314,7 +314,10 @@ class GameCoordinator:
         return all_items_obtained and (
             self.player.get_current_location() == "start_room"
         )
-
+    
+    def trophy_returned(self):
+        return (self.player.get_current_location() == "armory") and "trophy" in self.player.get_inventory_items_by_id()
+           
     # Run game
     def run_game(self):
         while True:
@@ -323,5 +326,7 @@ class GameCoordinator:
                 self.process_args(args=args)
                 if self.ready_to_explore_condition_reached():
                     print("You feel prepared, proceed into the dungeon")
+                if self.trophy_returned():
+                    print("YOU ARE VICTORIOUS, THE OGRE HAS BEEN SLAIN! ... right?")
             else:
                 self.logger.error("Invalid cmd, try again.")
