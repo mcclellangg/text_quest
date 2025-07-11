@@ -105,9 +105,9 @@ class Room:
         """Check if a specific item is present in the room"""
         return item_name in items_in_room
 
-    def _visit_count_less(self, count: int, items_in_room: List[str]) -> bool:
-        """Check if player has visited less than count times"""
-        return self.num_player_visits < count
+    def _visit_count_less(self, n: int, items_in_room: List[str]) -> bool:
+        """Check if player has visited less than n (number) times"""
+        return self.num_player_visits < n
 
     def generate_modified_description(
         self, items_in_room: Optional[List[str]] = None

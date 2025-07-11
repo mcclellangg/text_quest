@@ -273,10 +273,16 @@ class GameCoordinator:
     """Methods that rely on multiple objects."""
 
     def get_items_in_current_room(self) -> List[str]:
-        """Identify items (via item_id) in current room based on their current_location."""
+        """Identify items (via item_id) in current room based on either their location or player's location (if in player_inventory)."""
         items_in_room = []
         for item_id, item in self.item_map.items():
-            if item.get_current_location() == self.current_room.get_id():
+            current_room_id = self.current_room.get_id()
+            item_location_id = item.get_current_location()
+            if item_location_id == "player_inventory" and (
+                self.player.get_current_location() == current_room_id
+            ):
+                items_in_room.append(item_id)
+            elif item_location_id == current_room_id:
                 items_in_room.append(item_id)
         return items_in_room
 

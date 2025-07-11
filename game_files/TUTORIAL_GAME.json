@@ -7,7 +7,7 @@
             "num_player_visits": 1,
             "connections_map": {
                 "w": "armory",
-                "n": "wine_cellar"
+                "n": "dark_maze_a"
             },
             "properties": {
                 "objects": {
@@ -27,7 +27,7 @@
                         "condition": {
                             "type": "visit_count_less",
                             "params": [
-                                1
+                                2
                             ]
                         },
                         "description_modifier": "The air feels stale, as if no one has been here in ages."
@@ -56,6 +56,74 @@
                     }
                 }
             }
+        },
+        "dark_maze_a": {
+            "id": "dark_maze_a",
+            "name": "DARK MAZE",
+            "base_description": "It stinks in here!\n",
+            "num_player_visits": 0,
+            "connections_map": {
+                "n": "dark_maze_b",
+                "s": "start_room"
+            },
+            "properties": {
+                "conditional_descriptions": {
+                    "lamp_present": {
+                        "condition": {
+                            "type": "has_item",
+                            "params": [
+                                "lamp"
+                            ]
+                        },
+                        "description_modifier": "Stone walls surround you, and an arched door leads north."
+                    }
+                }
+            }
+        },
+        "dark_maze_b": {
+            "id": "dark_maze_b",
+            "name": "DARK MAZE",
+            "base_description": "It stinks in here! Ugh it's even worse than before.\n",
+            "num_player_visits": 0,
+            "connections_map": {
+                "s": "dark_maze_a",
+                "n": "boss_room"
+            },
+            "properties": {
+                "conditional_descriptions": {
+                    "lamp_present": {
+                        "condition": {
+                            "type": "has_item",
+                            "params": [
+                                "lamp"
+                            ]
+                        },
+                        "description_modifier": "Stone walls surround you, and an arched door leads north."
+                    }
+                }
+            }
+        },
+        "boss_room": {
+            "id": "boss_room",
+            "name": "OGRE'S DEN",
+            "base_description": "A large ogre awaits with a wide and crooked grin. Glaring with malice.\n",
+            "num_player_visits": 0,
+            "connections_map": {
+                "s": "dark_maze_b"
+            },
+            "properties": {
+                "conditional_descriptions": {
+                    "first_visit": {
+                        "condition": {
+                            "type": "visit_count_less",
+                            "params": [
+                                2
+                            ]
+                        },
+                        "description_modifier": "The ogre grabs you with alarming speed. GWHWAHAHAHA he laughs."
+                    }
+                }
+            }
         }
     },
     "player": {
@@ -78,6 +146,12 @@
             "name": "sword",
             "description": "An old sword. Beneath layers of dust, the blade still looks sharp enough to cut. Handle with care.",
             "current_location": "armory"
+        },
+        "trophy": {
+            "id": "trophy",
+            "name": "trophy",
+            "description": "A timeless artifact reeking of nostalgia.",
+            "current_location": "boss_room"
         }
     }
 }
