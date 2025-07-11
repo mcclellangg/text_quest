@@ -76,8 +76,9 @@ class Player:
         if item in self.inventory:
             print(f"{item.id} removed from pack.")
 
-    def update_total_moves(self):
-        self.total_moves += 1
+    def increment_total_moves(self, n: int = 1):
+        """Increments total moves taken by player by given number (n) or 1."""
+        self.total_moves += n
 
 
 @dataclass
@@ -167,7 +168,8 @@ class Room:
     def get_name(self):
         return self.name
 
-    def get_id(self):
+    def get_id(self) -> str:
+        """Returns room_id, ex: -> 'start_room'"""
         return self.id
 
     def display_room(self, items_in_room: List[str]):
@@ -179,7 +181,7 @@ class Room:
         print(self.generate_modified_description(items_in_room=items_in_room))
 
     def validate_direction(self, direction: str):
-        # NOTE: error should be handled at a higher level, but for prototype purposes this is fine.
+        """Check connections map for attempted direction and return True if player can travel to that room."""
         try:
             self.connections_map[direction]
             return True
@@ -190,5 +192,5 @@ class Room:
     def get_adjacent_room_id(self, direction: str):
         return self.connections_map[direction]
 
-    def update_num_player_visits(self):
-        self.num_player_visits += 1
+    def increment_num_player_visits(self, n=1):
+        self.num_player_visits += n

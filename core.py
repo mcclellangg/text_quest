@@ -3,7 +3,7 @@ Core components for running the game.
 - GameCoordinator
 """
 
-from config import BASE_DIR, GAME_FILE_DIR, TUTORIAL_GAME_FILENAME
+from config import BASE_DIR, GAME_FILE_DIR, TUTORIAL_GAME_FILENAME, VALID_DIRECTIONS
 from copy import deepcopy
 from entities import Item, Player, Room
 import json
@@ -60,7 +60,7 @@ class GameCoordinator:
             "restart": self.handle_restart,
             "look": self.handle_look,
             "take": self.handle_take,
-            # "move": self.handle_move_cmd,
+            "move": self.handle_move,
             # "stats": self.display_player_stats
         }
 
@@ -71,7 +71,7 @@ class GameCoordinator:
             self.logger.error(f"Invalid cmd ERROR: {args[0], {e}}")
             return e
 
-    # arg handlers
+    # Game File handlers (save, load, restart)
     def handle_load(self, args):
         try:
             filename = args[1]
@@ -186,20 +186,12 @@ class GameCoordinator:
             self.logger.error(f"Save game error: {file_path}, {e}")
             return e
 
-    # Negotiators
-    """Methods that rely on multiple objects."""
+    # Player Command handlers
+    """
+    Generally handlers pass args to game functionality methods after performing basic input validation.
+    """
 
-    def get_items_in_current_room(self) -> List[str]:
-        """Identify items (via item_id) in current room based on their current_location."""
-        items_in_room = []
-        for item_id, item in self.item_map.items():
-            if item.get_current_location() == self.current_room.get_id():
-                items_in_room.append(item_id)
-        return items_in_room
-
-    # handle player cmds
     def handle_look(self, args):
-        # validate
         if len(args) == 1:
             print(
                 self.current_room.generate_modified_description(
@@ -211,6 +203,18 @@ class GameCoordinator:
             self.generate_description(target=target)
         else:
             self.logger.error(f"ERROR-Unexpected args passed: {args}")
+
+    def handle_move(self, args):
+        if len(args) != 2:
+            self.logger.info("move cmd ERROR: move expects exactly 2 args.")
+        elif args[1] not in VALID_DIRECTIONS:
+            print(
+                f"Invalid direction provided: {args[1]}\nChoose from the following: {VALID_DIRECTIONS}"
+            )
+        else:
+            if self.validate_player_movement(direction=args[1]):
+                next_room_id = self.current_room.get_adjacent_room_id(direction=args[1])
+                self.update_current_room(room_id=next_room_id)
 
     def generate_description(self, target):
         """
@@ -245,6 +249,7 @@ class GameCoordinator:
                 == self.player.get_current_location()
             ):
                 # STATE CHANGE #
+                self.player.increment_total_moves(n=1)
                 self.player.add_item_to_inventory(
                     valid_target_item
                 )  # This just adds id of target
@@ -263,11 +268,40 @@ class GameCoordinator:
         else:
             self.logger.error(f"ERROR-Unexpected args passed: {args}")
 
+        # Negotiators
+
+    """Methods that rely on multiple objects."""
+
+    def get_items_in_current_room(self) -> List[str]:
+        """Identify items (via item_id) in current room based on their current_location."""
+        items_in_room = []
+        for item_id, item in self.item_map.items():
+            if item.get_current_location() == self.current_room.get_id():
+                items_in_room.append(item_id)
+        return items_in_room
+
+    def validate_player_movement(self, direction) -> bool:
+        """Checks validity of player movement, and increments move regardless of validity."""
+        self.player.increment_total_moves(
+            n=1
+        )  # NOTE: move this to player_actions once actions become more complicated
+        return self.current_room.validate_direction(direction=direction)
+
+    def update_current_room(self, room_id: str):
+        self.logger.info(
+            f"Moving from current_room_id: {self.current_room.get_id()} to next_room_id: {room_id}"
+        )
+        self.room_map[self.current_room.get_id()] = self.current_room
+        self.current_room = self.room_map[room_id]
+        self.player.update_current_location(room_id=room_id)
+        self.current_room.increment_num_player_visits(n=1)
+        self.current_room.display_room(items_in_room=self.get_items_in_current_room())
+
     # GameState conditions
     def ready_to_explore_condition_reached(self):
         """Returns True if player has obtained both the 'lamp' and the 'sword' and is in the start room."""
         all_items_obtained = True
-        items_to_obtain = ["lamp", "magic_sword"]
+        items_to_obtain = ["lamp", "sword"]
         for item in items_to_obtain:
             if item not in self.player.get_inventory_items_by_id():
                 return False

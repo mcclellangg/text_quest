@@ -3,8 +3,8 @@
         "start_room": {
             "id": "start_room",
             "name": "DUNGEON ENTRANCE",
-            "base_description": "You stand alone in a dark damp basement. In the wall before you there is a gaping fissure large enough to squeeze through. To the west there is a door.",
-            "num_player_visits": 0,
+            "base_description": "You stand alone in a dark damp basement. In the wall before you there is a gaping fissure large enough to squeeze through\n. To the west there is a door.",
+            "num_player_visits": 1,
             "connections_map": {
                 "w": "armory",
                 "n": "wine_cellar"
@@ -34,6 +34,28 @@
                     }
                 }
             }
+        },
+        "armory": {
+            "id": "armory",
+            "name": "ARMORY",
+            "base_description": "An empty pedestal sits across the room. Various weapons line the walls, dull and rusted from lack of use.\n",
+            "num_player_visits": 0,
+            "connections_map": {
+                "e": "start_room"
+            },
+            "properties": {
+                "conditional_descriptions": {
+                    "lamp_present": {
+                        "condition": {
+                            "type": "has_item",
+                            "params": [
+                                "sword"
+                            ]
+                        },
+                        "description_modifier": "However, there is one sword among them that may yet prove of use."
+                    }
+                }
+            }
         }
     },
     "player": {
@@ -44,19 +66,18 @@
         ],
         "current_location": "start_room"
     },
-    "items":
-    {
+    "items": {
         "lamp": {
             "id": "lamp",
             "name": "lamp",
             "description": "An old storm lantern bearing the stamp of 'Cloman Co-makers of reliable products'.",
             "current_location": "start_room"
         },
-        "magic_sword": {
-            "id": "magic_sword",
-            "name": "magic sword",
+        "sword": {
+            "id": "sword",
+            "name": "sword",
             "description": "An old sword. Beneath layers of dust, the blade still looks sharp enough to cut. Handle with care.",
-            "current_location": "start_room"
+            "current_location": "armory"
         }
     }
 }
