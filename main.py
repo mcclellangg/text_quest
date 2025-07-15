@@ -8,7 +8,7 @@ from logger_config import setup_logging
 
 
 def main():
-    setup_logging(log_level=logging.DEBUG, log_file="logs/text_quest.log")
+    setup_logging(log_level=logging.ERROR, log_file="logs/text_quest.log")
     game = GameCoordinator()
     game.run_game()
 
