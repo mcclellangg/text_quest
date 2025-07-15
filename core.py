@@ -61,6 +61,7 @@ class GameCoordinator:
             "look": self.handle_look,
             "take": self.handle_take,
             "move": self.handle_move,
+            "inventory": self.handle_inventory,
             # "stats": self.display_player_stats
         }
 
@@ -191,6 +192,20 @@ class GameCoordinator:
     Generally handlers pass args to game functionality methods after performing basic input validation.
     """
 
+    def handle_inventory(self, args):
+        if len(args) == 1:
+            player_inventory = self.player.get_inventory_items_by_id()
+            inventory_description = ""
+            if player_inventory:
+                inventory_description += "Items in pack:"
+                for item in player_inventory:
+                    inventory_description += f"\n\t{item}"
+            else:
+                inventory_description = "Your pockets are empty."
+            print(inventory_description)
+        else:
+            self.logger.error(f"Unexpected args passed: {args}")
+
     def handle_look(self, args):
         if len(args) == 1:
             print(
@@ -268,9 +283,10 @@ class GameCoordinator:
         else:
             self.logger.error(f"ERROR-Unexpected args passed: {args}")
 
-        # Negotiators
-
-    """Methods that rely on multiple objects."""
+    # Negotiators
+    """
+    Methods that rely on multiple objects.
+    """
 
     def get_items_in_current_room(self) -> List[str]:
         """Identify items (via item_id) in current room based on either their location or player's location (if in player_inventory)."""

@@ -106,7 +106,7 @@
         "boss_room": {
             "id": "boss_room",
             "name": "OGRE'S DEN",
-            "base_description": "A large ogre awaits with a wide and crooked grin. Glaring with malice.",
+            "base_description": "A large ogre awaits with a wide and crooked grin. Glaring with malice.\n",
             "num_player_visits": 0,
             "connections_map": {
                 "s": "dark_maze_b"
