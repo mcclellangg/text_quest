@@ -13,7 +13,7 @@ import sys
 from typing import List
 
 
-PROMPT = "> "
+PROMPT = "\n> "
 
 
 class GameCoordinator:
@@ -314,10 +314,12 @@ class GameCoordinator:
         return all_items_obtained and (
             self.player.get_current_location() == "start_room"
         )
-    
+
     def trophy_returned(self):
-        return (self.player.get_current_location() == "armory") and "trophy" in self.player.get_inventory_items_by_id()
-           
+        return (
+            self.player.get_current_location() == "armory"
+        ) and "trophy" in self.player.get_inventory_items_by_id()
+
     # Run game
     def run_game(self):
         while True:

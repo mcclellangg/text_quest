@@ -3,7 +3,7 @@
         "start_room": {
             "id": "start_room",
             "name": "DUNGEON ENTRANCE",
-            "base_description": "You stand alone in a dark damp basement. In the wall before you there is a gaping fissure large enough to squeeze through\n. To the west there is a door.",
+            "base_description": "You stand alone in a dark damp basement. In the wall before you there is a gaping fissure large enough to squeeze through.\nTo the west there is a door.",
             "num_player_visits": 1,
             "connections_map": {
                 "w": "armory",
@@ -38,7 +38,7 @@
         "armory": {
             "id": "armory",
             "name": "ARMORY",
-            "base_description": "An empty pedestal sits across the room. Various weapons line the walls, dull and rusted from lack of use.\n",
+            "base_description": "An empty pedestal sits across the room. Various weapons line the walls, dull and rusted from lack of use.",
             "num_player_visits": 0,
             "connections_map": {
                 "e": "start_room"
@@ -60,7 +60,7 @@
         "dark_maze_a": {
             "id": "dark_maze_a",
             "name": "DARK MAZE",
-            "base_description": "It stinks in here!\n",
+            "base_description": "It stinks in here!",
             "num_player_visits": 0,
             "connections_map": {
                 "n": "dark_maze_b",
@@ -83,7 +83,7 @@
         "dark_maze_b": {
             "id": "dark_maze_b",
             "name": "DARK MAZE",
-            "base_description": "It stinks in here! Ugh it's even worse than before.\n",
+            "base_description": "It stinks in here! Ugh it's even worse than before.",
             "num_player_visits": 0,
             "connections_map": {
                 "s": "dark_maze_a",
@@ -106,7 +106,7 @@
         "boss_room": {
             "id": "boss_room",
             "name": "OGRE'S DEN",
-            "base_description": "A large ogre awaits with a wide and crooked grin. Glaring with malice.\n",
+            "base_description": "A large ogre awaits with a wide and crooked grin. Glaring with malice.",
             "num_player_visits": 0,
             "connections_map": {
                 "s": "dark_maze_b"
