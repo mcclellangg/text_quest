@@ -3,7 +3,7 @@ Core components for running the game.
 - GameCoordinator
 """
 
-from config import BASE_DIR, GAME_FILE_DIR, TUTORIAL_GAME_FILENAME, VALID_DIRECTIONS
+from config import BASE_DIR, TUTORIAL_GAME_FILENAME, VALID_DIRECTIONS
 from copy import deepcopy
 from entities import Item, Player, Room
 import json
@@ -92,7 +92,7 @@ class GameCoordinator:
                 game_data = json.load(f)
                 self.game_data = game_data
                 self.logger.info(f"Game loaded: {filename}\n")
-                # print(f"Game loaded: {filename}\n")
+                print(f"Game loaded: {filename}\n")
                 self.post_load_game_file_processing()
                 return game_data
         except Exception as e:
@@ -151,7 +151,7 @@ class GameCoordinator:
                 filename=TUTORIAL_GAME_FILENAME, dir="game_files"
             )
             self.logger.info("Game restarted")
-            # print("Game restarted")
+            print("Game restarted")
         else:
             print("Very well, continue on ...")
 
@@ -181,6 +181,7 @@ class GameCoordinator:
             with open(file_path, mode="w", encoding="utf-8") as f:
                 game_state = self.get_game_state()
                 json.dump(game_state, f, indent=4, sort_keys=True)
+                print((f"Game save: {file_path}"))
                 self.logger.info(f"Game save: {file_path}")
                 return file_path
         except Exception as e:
