@@ -62,6 +62,7 @@ class GameCoordinator:
             "take": self.handle_take,
             "move": self.handle_move,
             "inventory": self.handle_inventory,
+            "inspect": self.handle_item_inspection,
             # "stats": self.display_player_stats
         }
 
@@ -192,6 +193,32 @@ class GameCoordinator:
     """
     Generally handlers pass args to game functionality methods after performing basic input validation.
     """
+
+    def handle_item_inspection(self, args) -> str:
+        """
+        Dynamic property interaction handler that uses command mappings
+        defined in the item's property constraints.
+
+        Differentiated from `look` cmd, because `look` only renders an item's base_description.
+        """
+
+        if len(args) != 2:
+            self.logger.info("move cmd ERROR: move expects exactly 2 args.")
+            print("Invalid command format!")
+            return "Invalid command format!"
+        else:
+            target_item = args[1]
+            if target_item in self.player.get_inventory_items_by_id():
+                item_description = self.item_map[
+                    target_item
+                ].generate_modified_description()
+                print(item_description)
+                return item_description
+            else:
+                self.logger.info(f"Player inspected invalid item: {target_item}")
+                msg = f"No {target_item} here, try picking it up first."
+                print(msg)
+                return msg
 
     def handle_inventory(self, args):
         if len(args) == 1:

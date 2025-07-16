@@ -6,25 +6,107 @@ Game entities:
 """
 
 from dataclasses import dataclass, asdict
-from typing import List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 
 @dataclass
 class Item:
     id: str
     name: str
-    description: str
+    base_description: str
     current_location: str
+    commands: List[str]
+    properties: Dict[str, Any]
+    property_constraints: Dict[str, Dict]
+    cmd_to_config_map: Dict[str, Dict]
+
+    # Command function registry
+    command_functions: Dict[str, Callable] = None
+
+    def __post_init__(self):
+        """
+        Initialize command functions after object creation.
+        Needed because command_functions will be different on a per-instance level.
+        """
+        if not self.command_functions:
+            self._initialize_command_functions()
+
+    def _initialize_command_functions(self):
+        # Shared command_functions
+        self.command_functions = {
+            "inspect": self.inspect_object,
+            # "toggle_property": self.execute_property_command,
+            # "set_property": self.execute_property_command,
+            # "increment_property": self.execute_property_command
+        }
+
+        # Map specific commands based on action type
+        # for cmd_name, cmd_config in self.cmd_to_config_map.items():
+        #     if cmd_config.get("action_type") == "toggle":
+        #         self.command_functions[cmd_name] = self.execute_property_command
+        #     elif cmd_config.get("action_type") == "set_value":
+        #         self.command_functions[cmd_name] = self.execute_property_command
+        #     elif cmd_config.get("action_type") == "increment":
+        #         self.command_functions[cmd_name] = self.execute_property_command
 
     @classmethod
     def from_dict(cls, item_data: dict):
         return cls(**item_data)
 
     def to_dict(self):
-        return asdict(self)
+        data = asdict(self)
+        data.pop("command_functions", None)
+        return data
 
     def get_description(self):
-        return self.description
+        return self.base_description
+
+    def generate_modified_description(self):
+        """Get a dynamic description including property states."""
+        base_description = self.base_description
+
+        state_descriptions = []
+
+        for prop_name, prop_value in self.properties.items():
+            if prop_name in self.property_constraints:
+                constraints = self.property_constraints[prop_name]
+
+                if "state_descriptions" in constraints:
+                    state_desc = self._format_property_description(
+                        prop_value, constraints["state_descriptions"]
+                    )
+                    if state_desc:
+                        state_descriptions.append(state_desc)
+
+        if state_descriptions:
+            return f"{base_description} {'\n'.join(state_descriptions)}"
+        return base_description
+
+    def _format_property_description(
+        self, value: Any, state_descriptions: Dict
+    ) -> Optional[str]:
+        """Get appropriate state description based on property value"""
+        if isinstance(value, bool):
+            return state_descriptions.get("true" if value else "false")
+        elif isinstance(value, (int, float)):
+            # Handle numeric ranges
+            for condition, description in state_descriptions.items():
+                if condition.startswith("greater_than_"):
+                    threshold = float(condition.split("_")[-1])
+                    if value > threshold:
+                        return description
+                elif condition.startswith("less_than_"):
+                    threshold = float(condition.split("_")[-1])
+                    if value < threshold:
+                        return description
+                elif condition.startswith("equals_"):
+                    threshold = float(condition.split("_")[-1])
+                    if value == threshold:
+                        return description
+        return None
+
+    def inspect_object(self):
+        return self.generate_modified_description()
 
     def get_current_location(self):
         return self.current_location

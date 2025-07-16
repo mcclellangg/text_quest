@@ -138,20 +138,51 @@
         "lamp": {
             "id": "lamp",
             "name": "lamp",
-            "description": "An old storm lantern bearing the stamp of 'Cloman Co-makers of reliable products'.",
-            "current_location": "start_room"
-        },
-        "sword": {
-            "id": "sword",
-            "name": "sword",
-            "description": "An old sword. Beneath layers of dust, the blade still looks sharp enough to cut. Handle with care.",
-            "current_location": "armory"
-        },
-        "trophy": {
-            "id": "trophy",
-            "name": "trophy",
-            "description": "A timeless artifact reeking of nostalgia.",
-            "current_location": "boss_room"
+            "base_description": "An old storm lantern bearing the stamp of 'Cloman Co-makers of reliable products'.",
+            "current_location": "start_room",
+            "commands": [
+                "on",
+                "off",
+                "inspect"
+            ],
+            "properties": {
+                "is_lit": false
+            },
+            "property_constraints": {
+                "is_lit": {
+                    "type": "bool",
+                    "toggleable": true,
+                    "description": "Whether the lamp is currently lit",
+                    "state_descriptions": {
+                        "true": "It glows with a warm, flickering light.",
+                        "false": "It sits dark and unlit."
+                    }
+                }
+            },
+            "cmd_to_config_map": {
+                "on": {
+                    "property": "is_lit",
+                    "action_type": "toggle",
+                    "target_value": true,
+                    "prerequisites": [
+                        {
+                            "property": "fuel_remaining",
+                            "condition": "greater_than",
+                            "value": 0,
+                            "fail_message": "The lamp is out of fuel and cannot be lit."
+                        }
+                    ],
+                    "already_message": "The lamp is already glowing brightly!",
+                    "success_message": "You turn on the lamp. It casts a warm, flickering light."
+                },
+                "off": {
+                    "property": "is_lit",
+                    "action_type": "toggle",
+                    "target_value": false,
+                    "already_message": "The lamp is already off.",
+                    "success_message": "You extinguish the lamp. Darkness surrounds you."
+                }
+            }
         }
     }
 }
