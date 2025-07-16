@@ -269,7 +269,7 @@ class GameCoordinator:
                 self.player.add_item_to_inventory(
                     valid_target_item
                 )  # This just adds id of target
-                self.item_map[valid_target_item.id].update_current_location(
+                self.item_map[valid_target_item.id].set_current_location(
                     "player_inventory"
                 )
                 # call for game data update
@@ -317,7 +317,7 @@ class GameCoordinator:
         )
         self.room_map[self.current_room.get_id()] = self.current_room
         self.current_room = self.room_map[room_id]
-        self.player.update_current_location(room_id=room_id)
+        self.player.set_current_location(room_id=room_id)
         self.current_room.increment_num_player_visits(n=1)
         self.current_room.display_room(items_in_room=self.get_items_in_current_room())
 

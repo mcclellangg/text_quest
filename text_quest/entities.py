@@ -29,12 +29,13 @@ class Item:
     def get_current_location(self):
         return self.current_location
 
-    def update_current_location(self, location: str):
+    def set_current_location(self, location: str):
         """Updates current_location of item to one of below values:
         - 'room_id'
         - 'player_inventory'
         """
         self.current_location = location
+        return self.current_location
 
 
 @dataclass
@@ -66,8 +67,9 @@ class Player:
         """
         return self.inventory
 
-    def update_current_location(self, room_id: str):
+    def set_current_location(self, room_id: str):
         self.current_location = room_id
+        return self.current_location
 
     def add_item_to_inventory(self, item):
         self.inventory.append(item.id)
