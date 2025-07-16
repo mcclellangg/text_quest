@@ -5,14 +5,15 @@ Tests for Item class functionality using lamp.
 import pytest
 from text_quest.entities import Item
 
+
 def test_lamp_and_update_location():
     # Minimal room data with a conditional description for lamp presence
     lamp_data = {
-            "id": "lamp",
-            "name": "lamp",
-            "description": "An old storm lantern bearing the stamp of 'Cloman Co-makers of reliable products'.",
-            "current_location": "start_room"
-        }
+        "id": "lamp",
+        "name": "lamp",
+        "description": "An old storm lantern bearing the stamp of 'Cloman Co-makers of reliable products'.",
+        "current_location": "start_room",
+    }
 
     # Create Lamp object
     lamp = Item.from_dict(lamp_data)

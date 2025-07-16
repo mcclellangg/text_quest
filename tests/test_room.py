@@ -5,6 +5,7 @@ Tests for Room class functionality.
 import pytest
 from text_quest.entities import Room
 
+
 def test_room_creation_and_modified_description():
     # Minimal room data with a conditional description for lamp presence
     room_data = {
@@ -16,14 +17,11 @@ def test_room_creation_and_modified_description():
         "properties": {
             "conditional_descriptions": {
                 "lamp_present": {
-                    "condition": {
-                        "type": "has_item",
-                        "params": ["lamp"]
-                    },
-                    "description_modifier": "An old lamp sits on the workbench, casting flickering shadows on the walls."
+                    "condition": {"type": "has_item", "params": ["lamp"]},
+                    "description_modifier": "An old lamp sits on the workbench, casting flickering shadows on the walls.",
                 }
             }
-        }
+        },
     }
 
     # Create Room object
