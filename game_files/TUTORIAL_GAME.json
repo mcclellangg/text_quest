@@ -146,7 +146,7 @@
                 "inspect"
             ],
             "properties": {
-                "is_lit": false
+                "is_lit": true
             },
             "property_constraints": {
                 "is_lit": {

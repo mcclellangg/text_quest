@@ -325,7 +325,9 @@ class GameCoordinator:
             if item_location_id == "player_inventory" and (
                 self.player.get_current_location() == current_room_id
             ):
-                # items_in_room.append(item_id)
+                items_in_room.append(
+                    item_id
+                )  # BUG: To be changed when Room objects are introduced (Feature #1)
                 self.logger.info("Functionality to be implemented.")
             elif item_location_id == current_room_id:
                 items_in_room.append(item_id)
