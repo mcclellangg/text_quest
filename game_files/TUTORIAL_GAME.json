@@ -146,7 +146,8 @@
                 "inspect"
             ],
             "properties": {
-                "is_lit": true
+                "is_lit": true,
+                "fuel_remaining": 10
             },
             "property_constraints": {
                 "is_lit": {
@@ -157,6 +158,9 @@
                         "true": "It glows with a warm, flickering light.",
                         "false": "It sits dark and unlit."
                     }
+                },
+                "fuel_remaining": {
+                    "type": "int"
                 }
             },
             "cmd_to_config_map": {

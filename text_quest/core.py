@@ -255,6 +255,7 @@ class GameCoordinator:
                 f"Invalid direction provided: {args[1]}\nChoose from the following: {VALID_DIRECTIONS}"
             )
         else:
+            self.player_state_manager()
             if self.validate_player_movement(direction=args[1]):
                 next_room_id = self.current_room.get_adjacent_room_id(direction=args[1])
                 self.update_current_room(room_id=next_room_id)
@@ -332,6 +333,31 @@ class GameCoordinator:
             elif item_location_id == current_room_id:
                 items_in_room.append(item_id)
         return items_in_room
+
+    def player_state_manager(self):
+        """
+        Increment total player moves, and calculate usage for any items in the player's inventory.
+        Invoked during below events that 'advance game state':
+        - take
+        - look
+        - move
+        """
+        self.logger.info(
+            f"Incrementing player_total_moves from {self.player.total_moves}"
+        )
+        self.player.increment_total_moves()
+        self.logger.info(f"player_total_moves incremented to {self.player.total_moves}")
+        # Update lamp fuel
+        if self.player._has_item_in_inventory("lamp"):
+            if self.item_map["lamp"].properties.get("is_lit", False):
+                current_fuel_remaining = self.item_map["lamp"].get_property_value(
+                    "fuel_remaining"
+                )
+                new_value = current_fuel_remaining - 1
+                self.logger.info(f"lamp fuel remaining: {current_fuel_remaining}")
+                self.item_map["lamp"].set_property(
+                    property_name="fuel_remaining", value=(new_value)
+                )
 
     def validate_player_movement(self, direction) -> bool:
         """Checks validity of player movement, and increments move regardless of validity."""

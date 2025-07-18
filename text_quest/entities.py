@@ -108,6 +108,36 @@ class Item:
     def inspect_object(self):
         return self.generate_modified_description()
 
+    # Property Managers
+    def has_property(self, property_name: str) -> bool:
+        """
+        Returns boolean indicating existence of given property.
+        """
+        return property_name in self.properties
+
+    def get_property_value(self, property_name: str) -> Any:
+        return self.properties.get(property_name)
+
+    def set_property(self, property_name: str, value: Any):
+        """
+        Set object property with type validation, constraints, and smart defaults.
+        Uses property_constraints from the object definition.
+        """
+        if property_name not in self.properties:
+            raise KeyError(f"Property '{property_name}' not found on object")
+
+        current_value = self.properties[property_name]
+        constraints = self.property_constraints[property_name]
+        expected_type = constraints["type"]
+
+        if expected_type == "int":
+            if value is None:
+                raise ValueError(f"Integer property '{property_name}' requires a value")
+            new_value = int(value)
+
+        self.properties[property_name] = new_value
+        return new_value
+
     def get_current_location(self):
         return self.current_location
 
@@ -140,6 +170,12 @@ class Player:
     def get_current_location(self):
         "Returns 'room_id' for current room."
         return self.current_location
+
+    def _has_item_in_inventory(self, item_id: str) -> bool:
+        """
+        Checks that a given item_id is currently in player's inventory. Returns a boolean.
+        """
+        return item_id in self.inventory
 
     def get_inventory_items_by_id(self) -> List[str]:
         """
