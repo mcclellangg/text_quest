@@ -3,9 +3,9 @@ Core components for running the game.
 - GameCoordinator
 """
 
-from config import BASE_DIR, TUTORIAL_GAME_FILENAME, VALID_DIRECTIONS
+from text_quest.config import BASE_DIR, TUTORIAL_GAME_FILENAME, VALID_DIRECTIONS
+from text_quest.entities import Item, Player, Room
 from copy import deepcopy
-from entities import Item, Player, Room
 import json
 import logging
 from pathlib import Path

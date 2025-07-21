@@ -156,6 +156,7 @@ class Player:
     total_moves: int
     inventory: list
     current_location: str
+    properties: dict
 
     @classmethod
     def from_dict(cls, player_data: dict):

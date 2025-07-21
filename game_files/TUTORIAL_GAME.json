@@ -132,6 +132,10 @@
         "inventory": [
             "blank_map"
         ],
+        "properties": {
+            "in_darkness": false,
+            "darkness_stacks": 0
+        },
         "current_location": "start_room"
     },
     "items": {
